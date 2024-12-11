@@ -22,4 +22,4 @@ const extractToken = (req) => {
   return null;
 };
 
-module.exports = createToken;
+module.exports = { createToken, extractToken };
