@@ -67,23 +67,12 @@ const loginUser = async (req, res) => {
 
 const getMe = async (req, res) => {
   try {
-    const token = extractToken(req);
-
-    if ((token = null)) {
-      return sendError(res, 401, "Вы не авторизованы");
-    }
-
-    decoded = verifyToken(token);
-
-    if (!decoded) {
-      return sendError(res, 401, "Вы не авторизованы");
-    }
-
-    const user = await User.findById(decoded._id);
+    const user = await User.findById(req.user._id);
 
     if (!user) {
-      return sendError(res, 404, "Пользователь не найден");
+      return sendError(res, 404, "Пользователь не найден");
     }
+
     delete user.password;
 
     return res.status(200).json({ user });
