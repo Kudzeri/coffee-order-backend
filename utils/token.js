@@ -23,7 +23,12 @@ const extractToken = (req) => {
 };
 
 const verifyToken = (token) => {
-  return jwt.verify(token, JWT_SECRET);
-};
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
 
+    return decoded;
+  } catch (error) {
+    return null;
+  }
+};
 module.exports = { createToken, extractToken, verifyToken };
