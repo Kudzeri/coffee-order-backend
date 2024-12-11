@@ -4,7 +4,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 
 const createToken = (user) => {
   const payload = {
-    id: user._id,
+    _id: user._id,
     name: user.name,
     isAnonymous: user.isAnonymous,
   };
