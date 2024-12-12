@@ -6,7 +6,7 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, "../uploads");
     if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir); 
+      fs.mkdirSync(uploadDir);
     }
     cb(null, uploadDir);
   },
@@ -43,7 +43,7 @@ const uploadImage = (req, res) => {
       .json({ message: "Не удалось загрузить изображение." });
   }
 
-  const imageUrl = `/images/${req.file.filename}`;
+  const imageUrl = `/uploads/${req.file.filename}`;
   res.status(200).json({ message: "Изображение успешно загружено", imageUrl });
 };
 

@@ -25,6 +25,8 @@ app.use("/api/", require("./routes/supplement"));
 app.use("/api/", require("./routes/product"));
 app.post("/api/upload-image", authMiddleware, isAdmin, upload, uploadImage);
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 // insertAdmin();
 
 const PORT = process.env.PORT || 5000;
