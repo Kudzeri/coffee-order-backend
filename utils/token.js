@@ -13,7 +13,7 @@ const createToken = (user) => {
 };
 
 const extractToken = (req) => {
-  const authHeader = reg.headers.authorization;
+  const authHeader = req.headers.authorization;
 
   if (authHeader && authHeader.startsWith("Bearer ")) {
     return authHeader.split(" ")[1];
@@ -24,7 +24,7 @@ const extractToken = (req) => {
 
 const verifyToken = (token) => {
   try {
-    const decoded = jwt.verify(token, SECRET_KEY);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     return decoded;
   } catch (error) {

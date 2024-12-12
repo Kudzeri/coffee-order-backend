@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const hashPassword = require("./passwordHash");
+const { hashPassword } = require("./passwordHash");
 const generateRandomName = require("./randomName");
 
 const createAnonymousUser = async () => {

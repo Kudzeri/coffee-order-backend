@@ -1,10 +1,22 @@
 const { createAnonymousUser, createNewUser } = require("../utils/user");
-const createToken = require("../utils/token");
+const { createToken } = require("../utils/token");
 const { sendError, sendServerError } = require("../utils/errorHandler");
-const { extractToken, verifyToken } = require("../utils/token");
+const { comparePassword } = require("../utils/passwordHash");
 const User = require("../models/User");
+const {
+  registerValidation,
+  loginValidation,
+} = require("../validations/authValidation");
 
 const registerUser = async (req, res) => {
+  const { error } = registerValidation(req.body);
+  if (error) {
+    return res.status(400).json({
+      message: "Ошибка валидации",
+      errors: error.details.map((detail) => detail.message),
+    });
+  }
+
   const { email, password, isAnonymous } = req.body;
 
   const existedUser = await User.findOne({ email });
@@ -22,6 +34,7 @@ const registerUser = async (req, res) => {
     }
 
     const token = createToken(user);
+    user.password = undefined;
 
     return res.status(201).json({
       message: isAnonymous
@@ -40,6 +53,14 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
+  const { error } = loginValidation(req.body);
+  if (error) {
+    return res.status(400).json({
+      message: "Ошибка валидации",
+      errors: error.details.map((detail) => detail.message),
+    });
+  }
+
   const { email, password } = req.body;
 
   try {
@@ -54,6 +75,7 @@ const loginUser = async (req, res) => {
     }
 
     const token = createToken(user);
+    user.password = undefined;
 
     return res.status(200).json({
       message: "Пользователь авторизован",
@@ -72,9 +94,7 @@ const getMe = async (req, res) => {
     if (!user) {
       return sendError(res, 404, "Пользователь не найден");
     }
-
-    delete user.password;
-
+    user.password = undefined;
     return res.status(200).json({ user });
   } catch (error) {
     return sendServerError(res, "Ошибка при получении данных:", error);
