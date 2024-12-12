@@ -19,9 +19,11 @@ const registerUser = async (req, res) => {
 
   const { email, password, isAnonymous } = req.body;
 
-  const existedUser = await User.findOne({ email });
-  if (existedUser) {
-    return sendError(res, 404, "Пользователь с таким email уже существует");
+  if (!isAnonymous) {
+    const existedUser = await User.findOne({ email });
+    if (existedUser) {
+      return sendError(res, 404, "Пользователь с таким email уже существует");
+    }
   }
 
   try {

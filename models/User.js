@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  expirationTime: { type: Date },
+  expirationTime: { type: Date, index: { expires: 0 } },
 });
 
 module.exports = mongoose.model("User", UserSchema);
