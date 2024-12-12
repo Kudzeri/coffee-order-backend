@@ -28,6 +28,7 @@ const registerValidation = (data) => {
       }),
     isAnonymous: Joi.boolean().messages({
       "boolean.base": "Поле 'isAnonymous' должно быть логическим значением.",
+      "any.required": "Поле 'isAnonymous' обязательно для регистрации.",
     }),
   });
 
