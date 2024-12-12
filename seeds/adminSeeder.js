@@ -5,24 +5,25 @@ const users = [
   {
     name: "Admin Samurai",
     email: "admin@samurai.com",
-    password: hashPassword("coffee123"),
+    password: "coffee123", // Пока оставляем пароль, позже хешируем
     role: "admin",
     isAnonymous: false,
   },
 ];
 
-// User.deleteMany({})
-//   .then(() => {
-//     console.log("Users collection is cleared");
+const insertAdmin = async () => {
+  try {
+    for (let user of users) {
+      user.password = await hashPassword(user.password);
+    }
 
-//     return User.insertMany(users);
-//   })
-User.insertMany(users)
-  .then(() => {
+    await User.insertMany(users);
     console.log("Seeder data inserted successfully");
     process.exit();
-  })
-  .catch((err) => {
+  } catch (err) {
     console.error("Seeder error:", err);
     process.exit(1);
-  });
+  }
+};
+
+module.exports = { insertAdmin };
