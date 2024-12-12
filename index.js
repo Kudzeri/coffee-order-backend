@@ -18,6 +18,7 @@ app.use(
 
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/", require("./routes/category"));
+app.use("/api/", require("./routes/supplement"));
 
 // insertAdmin();
 

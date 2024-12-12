@@ -1,6 +1,5 @@
 const Joi = require("joi");
 
-// Валидация создания добавки
 const createSupplementValidation = (data) => {
   const schema = Joi.object({
     name: Joi.string().min(3).max(100).required().messages({
@@ -27,7 +26,6 @@ const createSupplementValidation = (data) => {
   return schema.validate(data, { abortEarly: false });
 };
 
-// Валидация обновления добавки
 const updateSupplementValidation = (data) => {
   const schema = Joi.object({
     name: Joi.string().min(3).max(100).messages({
