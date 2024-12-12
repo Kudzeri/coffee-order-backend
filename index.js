@@ -3,6 +3,9 @@ const express = require("express");
 const connectDB = require("./config/db");
 const cors = require("cors");
 const { insertAdmin } = require("./seeds/adminSeeder");
+const authMiddleware = require("./middlewares/authMiddleware");
+const isAdmin = require("./middlewares/isAdminMiddleware");
+const { upload, uploadImage } = require("./controllers/imageController");
 
 dotenv.config();
 const app = express();
@@ -20,6 +23,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/", require("./routes/category"));
 app.use("/api/", require("./routes/supplement"));
 app.use("/api/", require("./routes/product"));
+app.post("/upload-image", authMiddleware, isAdmin, upload, uploadImage);
 
 // insertAdmin();
 
