@@ -5,7 +5,7 @@ const authMiddleware = (req, res, next) => {
   const token = extractToken(req);
 
   if (!token) {
-    // console.log("token not found");
+    console.log("token not found");
     return sendError(res, 401, "Вы не авторизованы ");
   }
 

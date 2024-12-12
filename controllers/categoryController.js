@@ -1,5 +1,9 @@
 const Category = require("../models/Category");
 const { sendError, sendServerError } = require("../utils/errorHandler");
+const {
+  createCategoryValidation,
+  updateCategoryValidation,
+} = require("../validations/categoryValidation");
 
 const getCategoryById = async (req, res) => {
   try {
@@ -39,6 +43,15 @@ const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
 
+    const { error } = createCategoryValidation(req.body);
+    if (error) {
+      return sendError(
+        res,
+        400,
+        error.details.map((err) => err.message).join(", ")
+      );
+    }
+
     const existingCategory = await Category.findOne({ name });
     if (existingCategory) {
       return sendError(res, 400, "Категория с таким именем уже существует.");
@@ -57,6 +70,15 @@ const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, description } = req.body;
+
+    const { error } = updateCategoryValidation(req.body);
+    if (error) {
+      return sendError(
+        res,
+        400,
+        error.details.map((err) => err.message).join(", ")
+      );
+    }
 
     const category = await Category.findById(id);
     if (!category) {

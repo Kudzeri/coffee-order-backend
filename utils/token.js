@@ -6,6 +6,7 @@ const createToken = (user) => {
   const payload = {
     _id: user._id,
     name: user.name,
+    role: user.role,
     isAnonymous: user.isAnonymous,
   };
 
