@@ -24,6 +24,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/", require("./routes/category"));
 app.use("/api/", require("./routes/supplement"));
 app.use("/api/", require("./routes/product"));
+app.use("/api", require("./routes/order"))
 app.post("/api/upload-image", authMiddleware, isAdmin, upload, uploadImage);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
