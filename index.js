@@ -6,6 +6,7 @@ const { insertAdmin } = require("./seeds/adminSeeder");
 const authMiddleware = require("./middlewares/authMiddleware");
 const isAdmin = require("./middlewares/isAdminMiddleware");
 const { upload, uploadImage } = require("./controllers/imageController");
+const path = require("path");
 
 dotenv.config();
 const app = express();

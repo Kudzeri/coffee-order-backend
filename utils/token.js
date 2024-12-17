@@ -10,13 +10,13 @@ const createToken = (user) => {
     isAnonymous: user.isAnonymous,
   };
 
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
+  return jwt.sign(payload, JWT_SECRET, { algorithm: "HS256", expiresIn: "1d" });
 };
 
 const extractToken = (req) => {
   const authHeader = req.headers.authorization;
 
-  if (authHeader && authHeader.startsWith("Bearer ")) {
+  if (authHeader?.startsWith("Bearer ")) {
     return authHeader.split(" ")[1];
   }
 
@@ -25,11 +25,11 @@ const extractToken = (req) => {
 
 const verifyToken = (token) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    return decoded;
+    return jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] });
   } catch (error) {
+    console.error("Token verification error:", error.message);
     return null;
   }
 };
+
 module.exports = { createToken, extractToken, verifyToken };
