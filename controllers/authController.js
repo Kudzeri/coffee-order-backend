@@ -6,6 +6,8 @@ const User = require("../models/User");
 const {
   registerValidation,
   loginValidation,
+  editUserValidation,
+  changePasswordValidation
 } = require("../validations/authValidation");
 
 const registerUser = async (req, res) => {
