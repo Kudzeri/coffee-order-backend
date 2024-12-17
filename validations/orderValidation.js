@@ -1,5 +1,65 @@
 const Joi = require("joi");
 
+const updateOrderValidation = (data) => {
+  const schema = Joi.object({
+    status: Joi.string()
+      .valid("pending", "completed", "cancelled")
+      .messages({
+        "string.base": "Статус должен быть строкой.",
+        "any.only": "Статус может быть только 'pending', 'completed' или 'cancelled'.",
+      }),
+    products: Joi.array()
+      .items(
+        Joi.object({
+          product: Joi.string().required().messages({
+            "string.base": "Идентификатор продукта должен быть строкой.",
+            "any.required": "Идентификатор продукта обязателен.",
+          }),
+          quantity: Joi.number().integer().min(1).required().messages({
+            "number.base": "Количество должно быть числом.",
+            "number.integer": "Количество должно быть целым числом.",
+            "number.min": "Количество должно быть не менее 1.",
+            "any.required": "Количество обязательно.",
+          }),
+        })
+      )
+      .messages({
+        "array.base": "Продукты должны быть массивом.",
+      }),
+    supplements: Joi.array()
+      .items(
+        Joi.object({
+          supplement: Joi.string().required().messages({
+            "string.base": "Идентификатор добавки должен быть строкой.",
+            "any.required": "Идентификатор добавки обязателен.",
+          }),
+          quantity: Joi.number().integer().min(1).required().messages({
+            "number.base": "Количество должно быть числом.",
+            "number.integer": "Количество должно быть целым числом.",
+            "number.min": "Количество должно быть не менее 1.",
+            "any.required": "Количество обязательно.",
+          }),
+        })
+      )
+      .messages({
+        "array.base": "Добавки должны быть массивом.",
+      }),
+    totalPrice: Joi.number().positive().messages({
+      "number.base": "Общая стоимость должна быть числом.",
+      "number.positive": "Общая стоимость должна быть положительным числом.",
+    }),
+    paymentMethod: Joi.string()
+      .valid("cash", "card", "online")
+      .messages({
+        "string.base": "Метод оплаты должен быть строкой.",
+        "any.only":
+          "Метод оплаты может быть только 'cash', 'card' или 'online'.",
+      }),
+  });
+
+  return schema.validate(data, { abortEarly: false });
+};
+
 const createOrderValidation = (data) => {
   const schema = Joi.object({
     user: Joi.string().required().messages({
@@ -73,4 +133,4 @@ const createOrderValidation = (data) => {
   return schema.validate(data, { abortEarly: false });
 };
 
-module.exports = { createOrderValidation };
+module.exports = { createOrderValidation, updateOrderValidation };

@@ -24,7 +24,7 @@ const getOrderById = async (req, res) => {
 
 const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find()
+    const orders = await Order.find().sort({ createdAt: -1 })
       .populate("user products.product supplements.supplement");
 
     res.status(200).json({ orders });
