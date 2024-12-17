@@ -1,7 +1,7 @@
 const { createAnonymousUser, createNewUser } = require("../utils/user");
 const { createToken } = require("../utils/token");
 const { sendError, sendServerError } = require("../utils/errorHandler");
-const { comparePassword } = require("../utils/passwordHash");
+const { comparePassword, hashPassword } = require("../utils/passwordHash");
 const User = require("../models/User");
 const {
   registerValidation,
@@ -103,4 +103,76 @@ const getMe = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getMe };
+const editUserDetails = async (req, res) => {
+  const { error } = editUserValidation(req.body);
+  if (error) {
+    return res.status(400).json({
+      message: "Ошибка валидации",
+      errors: error.details.map((detail) => detail.message),
+    });
+  }
+
+  const { name, phone, email } = req.body;
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return sendError(res, 404, "Пользователь не найден");
+    }
+
+    if (email && email !== user.email) {
+      const emailExists = await User.findOne({ email });
+      if (emailExists) {
+        return sendError(res, 400, "Пользователь с таким email уже существует");
+      }
+    }
+
+    user.name = name || user.name;
+    user.phone = phone || user.phone;
+    user.email = email || user.email;
+    await user.save();
+
+    user.password = undefined;
+    return res.status(200).json({
+      message: "Данные пользователя обновлены",
+      user,
+    });
+  } catch (error) {
+    return sendServerError(res, "Ошибка при обновлении данных пользователя", error);
+  }
+};
+
+const changeUserPassword = async (req, res) => {
+  const { error } = changePasswordValidation(req.body);
+  if (error) {
+    return res.status(400).json({
+      message: "Ошибка валидации",
+      errors: error.details.map((detail) => detail.message),
+    });
+  }
+
+  const { currentPassword, newPassword } = req.body;
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return sendError(res, 404, "Пользователь не найден");
+    }
+
+    const isPasswordValid = comparePassword(currentPassword, user.password);
+    if (!isPasswordValid) {
+      return sendError(res, 401, "Неверный текущий пароль");
+    }
+
+    user.password = hashPassword(newPassword);
+    await user.save();
+
+    return res.status(200).json({
+      message: "Пароль успешно изменён",
+    });
+  } catch (error) {
+    return sendServerError(res, "Ошибка при смене пароля", error);
+  }
+};
+
+module.exports = { registerUser, loginUser, getMe, changeUserPassword, editUserDetails };

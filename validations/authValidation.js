@@ -50,4 +50,34 @@ const loginValidation = (data) => {
   return schema.validate(data, { abortEarly: false });
 };
 
-module.exports = { registerValidation, loginValidation };
+const editUserValidation = (data) => {
+  const schema = Joi.object({
+    name: Joi.string().min(3).messages({
+      "string.min": "Имя должно содержать не менее 3 символов.",
+    }),
+    phone: Joi.string().pattern(/^[0-9]{10,15}$/).messages({
+      "string.pattern.base": "Введите корректный номер телефона."
+    }),
+    email: Joi.string().email().messages({
+      "string.email": "Введите корректный email."
+    }),
+  });
+
+  return schema.validate(data, { abortEarly: false });
+};
+
+const changePasswordValidation = (data) => {
+  const schema = Joi.object({
+    currentPassword: Joi.string().required().messages({
+      "any.required": "Текущий пароль обязателен."
+    }),
+    newPassword: Joi.string().min(6).required().messages({
+      "string.min": "Новый пароль должен содержать не менее 6 символов.",
+      "any.required": "Новый пароль обязателен."
+    }),
+  });
+
+  return schema.validate(data, { abortEarly: false });
+};
+
+module.exports = { registerValidation, loginValidation, editUserValidation, changePasswordValidation };
