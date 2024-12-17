@@ -60,6 +60,14 @@ const createOrderValidation = (data) => {
           "Метод оплаты может быть только 'cash', 'card' или 'online'.",
         "any.required": "Метод оплаты обязателен.",
       }),
+    status: Joi.string()
+      .valid("pending", "completed", "cancelled")
+      .required()
+      .messages({
+        "string.base": "Статус должен быть строкой.",
+        "any.only": "Статус может быть только 'pending', 'completed' или 'cancelled'.",
+        "any.required": "Статус обязателен.",
+      }),
   });
 
   return schema.validate(data, { abortEarly: false });
