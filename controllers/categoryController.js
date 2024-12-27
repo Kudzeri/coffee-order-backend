@@ -1,3 +1,4 @@
+const Product = require("../models/Product");
 const Category = require("../models/Category");
 const { sendError, sendServerError } = require("../utils/errorHandler");
 const {
@@ -14,11 +15,14 @@ const getCategoryById = async (req, res) => {
       return sendError(res, 404, "Категория не найдена.");
     }
 
-    res.status(200).json({ category });
+    const products = await Product.find({ category: id });
+
+    res.status(200).json({ category, products });
   } catch (err) {
     return sendServerError(res, "Ошибка получения категории:", err);
   }
 };
+
 
 const getCategories = async (req, res) => {
   try {
